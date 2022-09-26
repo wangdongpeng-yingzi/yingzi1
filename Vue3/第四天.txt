@@ -1,0 +1,143 @@
+                          第四天
+			单页面程序
+单页面应用程序的特点
+单页面应用程序将所有的功能局限于一个 web 页面中，仅在该 web 页面初始化时加载相应的资源（ HTML、
+JavaScript 和 CSS）。一旦页面加载完成了，SPA 不会因为用户的操作而进行页面的重新加载或跳转。而是利用 JavaScript 动态地变换HTML 的内容，从而实现页面与用户的交互。
+单页面应用程序的优点
+SPA 单页面应用程序最显著的 3 个优点如下：
+① 良好的交互体验
+⚫ 单页应用的内容的改变不需要重新加载整个页面
+⚫ 获取数据也是通过 Ajax 异步获取
+⚫ 没有页面之间的跳转，不会出现“白屏现象”
+② 良好的前后端工作分离模式
+⚫ 后端专注于提供 API 接口，更易实现 API 接口的复用
+⚫ 前端专注于页面的渲染，更利于前端工程化的发展
+③ 减轻服务器的压力
+⚫ 服务器只提供数据，不负责页面的合成与逻辑的处理，吞吐能力会提高几倍
+单页面应用程序的缺点
+任何一种技术都有自己的局限性，对于 SPA 单页面应用程序来说，主要的缺点有如下两个：
+① 首屏加载慢
+⚫ 路由懒加载
+⚫ 代码压缩
+⚫ CDN 加速
+⚫ 网络传输压缩
+② 不利于 SEO
+⚫ SSR 服务器端渲染
+
+
+  创建vite的项目
+  npm init vite-app 项目名称
+打开vscode 打开终端 npm i
+npm dev 运行
+
+项目结构：node_modules 目录用来存放第三方依赖包
+⚫ public 是公共的静态资源目录
+⚫ src 是项目的源代码目录（程序员写的所有代码都要放在此目录下）
+⚫ .gitignore 是 Git 的忽略文件
+⚫ index.html 是 SPA 单页面应用程序中唯一的 HTML 页面
+⚫ package.json 是项目的包管理配置文件
+⚫ assets 目录用来存放项目中所有的静态资源文件（css、fonts等）
+⚫ components 目录用来存放项目中所有的自定义组件
+⚫ App.vue 是项目的根组件
+⚫ index.css 是项目的全局样式表文件
+⚫ main.js 是整个项目的打包入口文件
+
+前端组件化开发的好处主要体现在以下两方面：
+⚫ 提高了前端代码的复用性和灵活性
+⚫ 提升了开发效率和后期的可维护性
+
+每个 .vue 组件都由 3 部分构成，分别是：
+⚫ template -> 组件的模板结构
+⚫ script -> 组件的 JavaScript 行为
+⚫ style -> 组件的样式    
+其中，每个组件中必须包含 template 模板结构，而 script 行为和 style 样式是可选的组成部分。
+如果希望使用 less 语法编写组件的 style 样式，可以按照如下两个步骤进行配置：
+① 运行 npm install less -D 命令安装依赖包，从而提供 less 语法的编译支持
+② 在 <style> 标签上添加 lang="less" 属性，即可使用 less 语法编写组件的样式
+
+vue2在template里有一个DOM点 vue3变成多个
+
+在建立main.js
+import { createApp } from 'vue'
+import App from './App.vue'
+import './index.css'
+import left from './components/left.vue'
+const app = createApp(App)
+app.component('My-left', left)
+app.mount('#app')
+
+全局注册和局部注册的区别
+⚫ 被全局注册的组件，可以在全局任何一个组件内使用
+⚫ 被局部注册的组件，只能在当前注册的范围内使用
+应用场景：
+如果某些组件在开发期间的使用频率很高，推荐进行全局注册；
+如果某些组件只在特定的情况下会被用到，推荐进行局部注册。
+
+组件之间的样式冲突问题
+默认情况下，写在 .vue 组件中的样式会全局生效，因此很容易造成多个组件之间的样式冲突问题。导致组件
+之间样式冲突的根本原因是：
+① 单页面应用程序中，所有组件的 DOM 结构，都是基于唯一的 index.html 页面进行呈现的
+② 每个组件中的样式，都会影响整个 index.html 页面中的 DOM 元素
+
+如何解决组件样式冲突的问题
+为每个组件分配唯一的自定义属性，在编写组件样式时，通过属性选择器来控制样式的作用域，v-data-001
+为了提高开发效率和开发体验，vue 为 style 节点提供了 scoped 属性，
+
+/deep/如果给当前组件的 style 节点添加了 scoped 属性，则当前组件的样式对其子组件是不生效的。如果想让某些样
+式对子组件生效，可以使用 /deep/ 深度选择器。
+
+组件的 props
+为了提高组件的复用性，在封装 vue 组件时需要遵守如下的原则：
+⚫ 组件的 DOM 结构、Style 样式要尽量复用
+⚫ 组件中要展示的数据，尽量由组件的使用者提供
+为了方便使用者为组件提供要展示的数据，vue 组件提供了 props 的概念。
+props 是组件的自定义属性，组件的使用者可以通过 props 把数据传递到子组件内部，供子组件内部进行使用。
+props 的作用：父组件通过 props 向子组件传递要展示的数据。
+props 的好处：提高了组件的复用性。
+在封装 vue 组件时，可以把动态的数据项声明为 props 自定义属性。自定义属性可以在当前组件的模板结构
+中被直接使用。
+子组件的<template>
+  <div>
+    <p>1.{{name}}</p>
+    <p>2.{{age}}</p>
+  </div>
+</template>
+<script>
+export default {
+props:['name','age']
+}
+</script>
+
+父组件：import Art from '地址' 还有component：'MyArt':Art注册 <MyArt :age="15" :name="'ZHANGSNA'"></MyArt>
+如果：props在没有定义name  如果父组件给子组件传递了未声明的 props 属性，则这些属性会被忽略，无法被子组件使用，
+
+v-bind 绑定 <MyArt :age="info.age" :name="'info.name'"></MyArt>
+
+ Class 与 Style 绑定
+在实际开发中经常会遇到动态操作元素样式的需求。因此，vue 允许开发者通过 v-bind 属性绑定指令，为元
+素动态绑定 class 属性的值和行内的 style 样式。
+可以通过三元表达式，动态的为元素绑定 class 的类名。
+:style 的对象语法十分直观——看着非常像 CSS，但其实是一个 JavaScript 对象。
+<template>
+ <div :style="{color:active,fontSize:fsize+'px','background-color':bgcolor}">小子</div>
+  <button @click="fsize+=1">T</button>
+  <button @click="fsize-=1">M</button>
+</template>
+<script>
+export default {
+data(){
+  return{
+    active:'red',
+    fsize:30,
+    bgcolor:'pink'
+  }}}
+</script>
+
+① 能够说出什么是单页面应用程序及组件化开发
+⚫ SPA、只有一个页面、组件是对 UI 结构的复用
+② 能够说出 .vue 单文件组件的组成部分
+⚫ template、script、style（scoped、lang） ③ 能够知道如何注册 vue 的组件
+⚫ 全局注册（app.component）、局部注册（components） ④ 能够知道如何声明组件的 props 属性
+⚫ props 数组
+④ 能够知道如何在组件中进行样式绑定
+⚫ 动态绑定 class、动态绑定 style

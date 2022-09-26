@@ -1,0 +1,77 @@
+                	    第二天                            
+                            vue3
+（一）能够说出什么是前端工程化
+前端工程化指的是:在企业级的前端项目开发中，把前端开发所需的工具、 技术、流程、经验等进行规范化、 
+标准化。最终落实到细节上，就是实现前端的“4个现代化”:
+模块化(js的模块化、css的模块化、其它资源的模块化)
+组件化(复用现有的UI结构、样式、行为)
+规范化(目录结构的划分、编码规范化、接口规范化、文档规范化、Git分支管理)
+自动化(自动化构建、自动部署、自动化测试)
+前端工程化的好处主要体现在如下两方面:
+前端工程化让前端开发能够“自成体系”，覆盖了前端项目从创建到部署的方方面面
+最大程度地提高了前端的开发效率，降低了技术选型、前后端联调等带来的协调沟通成本
+
+
+（二）能够说出webpack的作用
+概念:webpack是前端项目工程化的具体解决方案。
+主要功能:它提供了友好的前端模块化开发支持，以及代码压缩混淆、处理浏览器端JavaScript 的兼容性、性能优化等强大的功能。
+好处:让程序员把工作的重心放到具体功能的实现上，提高了前端开发效率和项目的可维护性。
+
+
+（三）能够掌握webpack的基本使用
+案例：① 新建项目空白目录，并运行 npm init –y 命令，初始化包管理配置文件 package.json
+② 新建 src 源代码目录
+③ 新建 src -> index.html 首页和 src -> index.js 脚本文件
+④ 初始化首页基本的结构
+⑤ 运行 npm install jquery –S 命令，安装 jQuery
+⑥ 通过 ES6 模块化的方式导入 jQuery，实现列表隔行变色效果
+安装包npm install webpack webpack-cli -D
+在项目根目录中，创建名为 webpack.config.js 的 webpack 配置文件，并初始化如下的基本配置：module.exports = {
+  mode: 'development'
+}
+在 package.json 的 scripts 节点下，新增 dev 脚本如下："scripts": {
+    "dev": "webpack"
+  }
+在用终端 npm run dev
+
+ mode 的可选值
+mode 节点的可选值有两个，分别是：
+① development
+开发环境
+不会对打包生成的文件进行代码压缩和性能优化
+打包速度快，适合在开发阶段使用
+② production
+生产环境
+会对打包生成的文件进行代码压缩和性能优化
+打包速度很慢，仅适合在项目发布阶段使用
+
+webpack.config.js 文件的作用
+webpack.config.js 是 webpack 的配置文件。webpack 在真正开始打包构建之前，会先读取这个配置文件，
+从而基于给定的配置，对项目进行打包。
+注意：由于 webpack 是基于 node.js 开发出来的打包工具，因此在它的配置文件中，支持使用 node.js 相关
+的语法和模块进行 webpack 的个性化配置。
+
+（四）了解常用plugin的基本使用
+（五）了解常用loader的基本使用
+（六）能够说出Source Map的作用
+Source Map 就是一个信息文件，里面储存着位置信息。也就是说，Source Map 文件中存储着压缩混淆后的
+代码，所对应的转换前的位置。
+有了它，出错的时候，除错工具将直接显示原始代码，而不是转换后的代码，能够极大的方便后期的调试。
+开发环境下默认生成的 Source Map，记录的是生成后的代码的位置。会导致运行时报错的行数与源代码的行
+数不一致的问题。
+开发环境下，推荐在 webpack.config.js 中添加如下的配置，即可保证运行时报错的行数与源代码的行数
+保持一致：module.exports={
+mode：'development'，
+devtool：'eval-soure-map',
+}在生产环境下，如果省略了 devtool 选项，则最终生成的文件中不包含 Source Map。这能够防止原始代码通 过 Source Map 的形式暴露给别有所图之人。
+在生产环境下，如果只想定位报错的具体行数，且不想暴露源码。此时可以将 devtool 的值设置为
+nosources-source-map。
+在生产环境下，如果想在定位报错行数的同时，展示具体报错的源码。此时可以将 devtool 的值设置为
+source-map。
+ 5.Source Map 的最佳实践
+① 开发环境下：
+⚫ 建议把 devtool 的值设置为 eval-source-map
+⚫ 好处：可以精准定位到具体的错误行
+② 生产环境下：
+⚫ 建议关闭 Source Map 或将 devtool 的值设置为 nosources-source-map
+⚫ 好处：防止源码泄露，提高网站的安全性

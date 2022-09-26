@@ -1,0 +1,137 @@
+				第七天
+（一）能够知道如何使用 ref 引用 DOM 和组件实例？
+1.什么是 ref 引用
+ref 用来辅助开发者在不依赖于 jQuery 的情况下，获取 DOM 元素或组件的引用。
+每个 vue 的组件实例上，都包含一个 $refs 对象，里面存储着对应的 DOM 元素或组件的引用。默认情况下，组件的 $refs 指向一个空对象。
+<template>
+  <div ref="my">zaijia</div>
+  <button @click="get" ref="my" >zaijia</button>
+</template>
+<script>
+export default {
+  name: 'App',
+  methods:{
+    get(){
+      console.log(this.$refs.my);
+      this.$refs.my.style.color='red'
+}}}
+</script>
+
+<template>
+ <MyFooter ref="my"></MyFooter>
+ <button @click="get"></button>
+</template>
+<script>
+export default {
+methods:{
+get(){
+ this.$refs.my.add() //找到子件的方法
+}}}
+</script>
+
+
+（二）能够知道 $nextTick 的调用时机？
+组件的 $nextTick(cb) 方法，会把 cb 回调推迟到下一个 DOM 更新周期之后执行。通俗的理解是：等组件的
+DOM 异步地重新渲染完成后，再执行 cb 回调函数。从而能保证 cb 回调函数可以操作到最新的 DOM 元素。
+
+（三）能够说出 keep-alive 元素的作用？
+<template>
+<button @click="comName='MyName'">组件1</button>
+<button @click="comName='MyMovie'">组件1</button>
+<component :is="comName"></component>
+</template>
+<script>
+  import MyName from './MyName.vue'
+  import MyMovie from './MyMovie.vue'
+export default {
+  name: 'App',
+  data(){
+   return{
+   comName:'MyName'
+   }
+  },
+  components:{
+    MyName,
+    MyMovie
+  }
+    }
+</script>
+1. 什么是动态组件
+动态组件指的是动态切换组件的显示与隐藏。vue 提供了一个内置的 <component> 组件，专门用来实现组件
+的动态渲染。
+① <component> 是组件的占位符
+② 通过 is 属性动态指定要渲染的组件名称
+③ <component is="要渲染的组件的名称"></component>
+2.使用 keep-alive 保持状态
+默认情况下，切换动态组件时无法保持组件的状态。此时可以使用 vue 内置的 <keep-alive> 组件保持动态组件的状态。示例代码如下：
+<keep-alive>
+<component :is="comName"></component>
+</keep-alive>
+
+（四）能够掌握插槽的基本用法？
+插槽（Slot）是 vue 为组件的封装者提供的能力。允许开发者在封装组件时，把不确定的、希望由用户指定的部分定义为插槽
+可以把插槽认为是组件封装期间，为用户预留的内容的占位符。
+<button @click="comName='MyName'">组件1</button>
+<button @click="comName='MyMovie'">组件1</button>
+<component :is="comName">卡槽内容
+</component>   //用到的内容
+
+<slot>卡槽</slot> //默认内容 卡槽
+
+具名插槽：如果在封装组件时需要预留多个插槽节点，则需要为每个 <slot> 插槽指定具体的 name 名称。这种带有具体名称的插槽叫做“具名插槽”。
+<template v-slot:header>
+<h1></h1>
+</template>  //这就是用具名插槽
+<slot name="header"></slot>  在被使用使用
+v-slot 简写：#
+<slot :info="infomation" :msg="message"></slot> // 
+
+在封装组件的过程中，可以为预留的 <slot> 插槽绑定 props 数据，这种带有 props 数据的 <slot> 叫做“作用域插槽”。
+<slot  :msg="mm">卡槽</slot>
+<my-test>
+<template v-slot:default="scope">
+  {{scope}}
+</template>
+</my-test>
+
+（五）能够知道如何实现自定义指令？
+vue 官方提供了 v-for、v-model、v-if 等常用的内置指令。除此之外 vue 还允许开发者自定义指令。
+vue 中的自定义指令分为两类，分别是：
+⚫ 私有自定义指令
+⚫ 全局自定义指令
+
+directives:{  
+  focus:{
+    mounted(el){
+      el.focus()
+    }
+  }  
+}             //自定义指令 v-mounted  （私有）
+
+mounted 函数只在元素第一次插入 DOM 时被调用，当 DOM 更新时 mounted 函数不会被触发。 updated 
+函数会在每次 DOM 更新完成后被调用。
+const app = createApp(App)
+app.directive('focus', {
+  mounted(el) {
+    el.focus()
+  }，
+ updata(el){
+    el.focus()
+  }
+})    //全局
+注意：在 vue2 的项目中使用自定义指令时，【 mounted -> bind 】【 updated -> update 】
+在绑定指令时，可以通过“等号”的形式为指令绑定具体的参数值，示例代码如下：
+app.directive('color',(el,binding)=>{
+  el.style.color=binding.value
+})
+组件件用v-color 来还字体颜色
+
+
+
+
+
+
+
+
+
+

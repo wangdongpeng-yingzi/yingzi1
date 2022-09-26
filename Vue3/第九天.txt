@@ -1,0 +1,142 @@
+(一)能够知道如何使用 vue-cli 创建 vue 项目？
+1.什么是 vue-cli
+vue-cli（俗称：vue 脚手架）是 vue 官方提供的、快速生成 vue 工程化项目的工具。
+特点：
+① 开箱即用
+② 基于 webpack
+③ 功能丰富且易于扩展
+④ 支持创建 vue2 和 vue3 的项目
+vue-cli 的中文官网首页：https://cli.vuejs.org/zh/
+2. 安装 vue-cli
+vue-cli 是基于 Node.js 开发出来的工具，因此需要使用 npm 将它安装为全局可用的工具：npm install -g @vue/cli    检查版本 vue --version
+ 创建项目
+vue-cli 提供了创建项目的两种方式：
+1.vue create 项目名称
+vue li 在powersell执行
+步骤1：在终端下运行 vue ui 命令，自动在浏览器中打开创建项目的可视化面板：
+步骤2：在详情页面填写项目名称：
+步骤3：在预设页面选择手动配置项目：
+步骤4：在功能页面勾选需要安装的功能（Choose Vue Version、Babel、CSS 预处理器、使用配置文件）：
+步骤5：在配置页面勾选 vue 的版本和需要的预处理器：2x less
+步骤6：将刚才所有的配置保存为预设（模板），方便下一次创建项目时直接复用之前的配置：
+步骤7：创建项目并自动安装依赖包：
+项目创建完成后，自动进入项目仪表盘：
+2.步骤1：在终端下运行 vue create demo2 命令，基于交互式的命令行创建 vue 的项目：
+步骤2：选择要安装的功能： choose Vue version Babel CSS
+步骤3：使用上下箭头选择 vue 的版本，并使用回车键确认选择： 2.X
+步骤4：使用上下箭头选择要使用的 css 预处理器，并使用回车键确认选择：less
+步骤5：使用上下箭头选择如何存储插件的配置信息，并使用回车键确认选择：IN dedicated config files
+步骤6：是否将刚才的配置保存为预设：
+步骤7：选择如何安装项目中的依赖包：
+步骤8：开始创建项目并自动安装依赖包：
+步骤9：项目创建完成：
+
+（二）能够知道如何在项目中安装与配置 element-ui？
+（三）能够知道 element-ui 中常见组件的用法？
+1. 什么是 vue 组件库？
+在实际开发中，前端开发者可以把自己封装的 .vue 组件整理、打包、并发布为 npm 的包，从而供其他人下载
+和使用。这种可以直接下载并在项目中使用的现成组件，就叫做 vue 组件库。
+ vue 组件库和 bootstrap 的区别
+二者之间存在本质的区别：
+bootstrap 只提供了纯粹的原材料（ css 样式、HTML 结构以及 JS 特效），需要由开发者做进一步的组装和改造
+vue 组件库是遵循 vue 语法、高度定制的现成组件，开箱即用
+最常用的 vue 组件库
+① PC 端 Element UI（https://element.eleme.cn/#/zh-CN） View UI（http://v1.iviewui.com/）
+② 移动端 Mint UI（http://mint-ui.github.io/#!/zh-cn） Vant（https://vantcontrib.gitee.io/vant/#/zh-CN/）
+Element UI
+Element UI 是饿了么前端团队开源的一套 PC 端 vue 组件库。支持在 vue2 和 vue3 的项目中使用：
+vue2 的项目使用旧版的 Element UI（https://element.eleme.cn/#/zh-CN） 
+vue3 的项目使用新版的 Element Plus（https://element-plus.gitee.io/#/zh-CN）
+在终端npm i element-ui -s
+开发者可以一次性完整引入所有的 element-ui 组件，或是根据需求，只按需引入用到的 element-ui 组件：
+完整引入：操作简单，但是会额外引入一些用不到的组件，导致项目体积过大
+按需引入：操作相对复杂一些，但是只会引入用到的组件，能起到优化项目体积的目的
+在main.js (完全导入)
+import ElementUI from 'element-ui'
+Vue.use(ElementUI)
+按需引入
+借助 babel-plugin-component，我们可以只引入需要的组件，以达到减小项目体积的目的。
+步骤1，安装 babel-plugin-component： npm install babel-plugin-component -d
+步骤2，修改根目录下的 babel.config.js 配置文件，新增 plugins 节点如下：
+module.exports = {
+  presets: [
+    '@vue/cli-plugin-babel/preset'
+  ],
+  plugins: [
+    [
+      'component',
+      {
+        libraryName: 'element-ui',
+        styleLibraryName: 'theme-chalk',
+      }
+    ]
+  ]
+}
+步骤3，如果你只希望引入部分组件，比如 Button，那么需要在 main.js 中写入以下内容：
+import {Button} from 'element-ui'
+Vue.use(Button.name,Button)
+把组件的导入和注册封装为独立的模块
+在 src 目录下新建 element-ui/index.js 模块，并声明如下的代码：
+import {Button,Input } from 'element-ui'
+Vue.use（Button）
+Vue.use（Input）
+
+能够知道如何使用 axios 中的拦截器
+1.需要在 main.js 入口文件中，通过 Vue 构造函数的 prototype 原型对象全局配置 axios：
+2. 什么是拦截器
+拦截器（英文：Interceptors）会在每次发起 ajax 请求和得到响应的时候自动被触发。
+3.通过 axios.interceptors.request.use(成功的回调, 失败的回调) 可以配置请求拦截器。示例代码如下：
+axios.interceptors.request.use(function（config){
+return config；
+}，function（error）{
+return Promise.reject(error);
+})
+4.请求拦截器 – Token 认证
+import axios from 'axios'
+axios.default.baseURL='https://www.escook.cn'
+axios.interceptors.request.use(config=>{
+config.headers.Authorization='Bear  xxx'
+return config
+})
+Vue.prototype.$http =axios
+ 请求拦截器 – 展示 Loading 效果
+借助于 element ui 提供的 Loading 效果组件（https://element.eleme.cn/#/zh-CN/component/loading）
+可以方便的实现 Loading 效果的展示：
+import {Loading} from 'element-ui'
+let loadingInstance = null
+axios.interceptors.request.use(config=>{
+loadingInstance = Loading.service({ fullscreen:true })
+return config
+})
+5.配置响应拦截器
+通过 axios.interceptors.response.use(成功的回调, 失败的回调) 可以配置响应拦截器。示例代码如下：
+axios.interceptors.request.use(function(response){
+return config},function(error){
+ return Promise.reject(error);
+}})
+响应拦截器 – 关闭 Loading 效果
+调用 Loading 实例提供的 close() 方法即可关闭 Loading 效果，示例代码如下：
+axios.interceptors.request.use(response=>{
+loadingInstance.close()
+return response
+})
+
+(四)能够知道如何配置 proxy 接口代理？
+通过 vue-cli 创建的项目在遇到接口跨域问题时，可以通过代理的方式来解决：
+① 把 axios 的请求根路径设置为 vue 项目的运行地址（接口请求不再跨域）
+② vue 项目发现请求的接口不存在，把请求转交给 proxy 代理
+③ 代理把请求根路径替换为 devServer.proxy 属性的值，发起真正的数据请求
+④ 代理把请求到的数据，转发给 axios
+1.在项目中配置 proxy 代理
+步骤1，在 main.js 入口文件中，把 axios 的请求根路径改造为当前 web 项目的根路径：
+axios。defaults。baseURL= 'http://localhost:8080'
+步骤2，在项目根目录下创建 vue.config.js 的配置文件，并声明如下的配置：
+module.exports={
+devServer:{
+proxy:'https:/www.escook.cn',
+},}
+注意：
+① devServer.proxy 提供的代理功能，仅在开发调试阶段生效
+② 项目上线发布时，依旧需要 API 接口服务器开启 CORS 跨域资源共享
+
+

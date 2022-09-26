@@ -1,0 +1,58 @@
+ 			第五天
+能够知道如何对 props 进行验证？
+在封装组件时对外界传递过来的 props 数据进行合法性的校验，从而防止数据不合法的问题。
+使用数组类型的 props 节点的缺点：无法为每个 prop 指定具体的数据类型。
+使用对象类型的 props 节点，可以对每个 prop 进行数据类型的校验，
+props：['count','state']该为props：{count：Number，state;Boolean}
+对象类型的 props 节点提供了多种数据验证方案，例如：
+① 基础的类型检查
+② 多个可能的类型
+③ 必填项校验
+④ 属性默认值
+⑤ 自定义验证函数
+Array:数组  Object：对象 Date：日期  Function：函数  Symbol：符号
+如果某个 prop 属性值的类型不唯一，此时可以通过数组的形式，为其指定多个可能的类型
+props：{ propA:[String,Number]}
+如果组件的某个 prop 属性是必填项，必须让组件的使用者为其传递属性的值。此时，可以通过如下的方式将
+其设置为必填项：
+props:{propa:{type:String,required:true}}
+在封装组件时，可以为某个 prop 属性指定默认值。props:{propa:{type:String,default:100}}
+在封装组件时，可以为 prop 属性指定自定义的验证函数，从而对 prop 属性的值进行更加精确的控制：
+props:{propa:{validator(value){return ['success','warming','danger'].index0f(vallue)!==-1}}}
+
+能够知道如何使用计算属性？
+计算属性本质上就是一个 function 函数，它可以实时监听 data 中数据的变化，并 return 一个计算后的新值，供组件渲染 DOM 时使用。
+computed:{plus(){return this.count *2}}
+注意：计算属性侧重于得到一个计算的结果，因此计算属性中必须有 return 返回值！
+计算属性的使用注意点
+① 计算属性必须定义在 computed 节点中
+② 计算属性必须是一个 function 函数
+③ 计算属性必须有返回值
+④ 计算属性必须当做普通属性使用
+
+
+
+
+
+能够知道如何为组件自定义事件？
+在封装组件时，为了让组件的使用者可以监听到组件内状态的变化，此时需要用到组件的自定义事件。
+<my-counter @countChange="getCount">
+emits:['countChange']
+methods:{
+  getCount(){
+   this.$emit('countChange')
+}
+
+
+
+能够知道如何在组件上使用 v-model？
+v-model 是双向数据绑定指令，当需要维护组件内外数据的同步时，可以在组件上使用 v-model 指令。
+⚫ 外界数据的变化会自动同步到 counter 组件中
+⚫ counter 组件中数据的变化，也会自动同步到外界
+
+① 父组件通过 v-bind: 属性绑定的形式，把数据传递给子组件
+② 子组件中，通过 props 接收父组件传递过来的数据
+
+① 在 v-bind: 指令之前添加 v-model 指令
+② 在子组件中声明 emits 自定义事件，格式为 update:xxx
+③ 调用 $emit() 触发自定义事件，更新父组件中的数据

@@ -1,0 +1,213 @@
+                            		Vue3  
+ 				       第一天
+（一）能够知道如何使用ES6的模块化语法？
+1.node.is 中默认仅支持 Common]S 模块化规范，若想基于nodeis体验与学习 ES6的模块化语法，可以按照
+2.如下两个步骤进行配置:
+确保安装了v14.151或更高版本的nodejs
+②在packagejson的根节点中添加"type":"module"节点
+
+注意：（正常导入）默认导出export default 默认导出对象名(方法和变量)
+let n1 = 10
+let n2 = 20
+function show() { }
+export default (  //默认导出只让用一次，里面可以多加，
+  n1,
+  show
+)
+默认导入import ** from “模块名”   //默认导入一次
+
+(按需导入)
+import { n1, n2, show } from './node.js'
+console.log(n1);
+console.log(n2);
+console.log(show);
+（按需导出）
+export let n1 = 10
+export let n2 = 20
+export function show() { }
+注意：按需导出导入注意事项
+1.每个模块中可以使用多次按需导出
+2.按需导入的成员名称必须和按需导出的名称保持一致
+3.按需导入时，可以使用 as 关键字进行重命名
+4.按需导入可以和默认导入一起使用
+
+导入和导出想要的：例如
+for (let index = 0; index < 4; index++) {
+  console.log(index);
+}
+在别的js文件直接import “文件名”即可
+
+
+（二）能够知道如何使用Promise解决回调地狱的问题？
+问题是：多层回调函数的相互嵌套，就形成了回调地狱，
+缺点是：代码耦合性太强，牵一发动全身，难以维护，
+       代码琐碎可读性差。
+Promise 是一个构造函数
+我们可以创建Proraise的实例constp=newPromise()
+new出来的Promise实例对象，代表一个异步操作
+Promise.prototype 上包含一个 .then() 方法
+每一次newPromise()构造函数得到的实例对象，
+都可以通过原型链的方式访问到.then()方法，例如p.then()
+then() 方法用来预先指定成功和失败的回调函数
+p.then(成功的回调函数，失败的回调函数)
+p.then(result => {}, error => {})
+调用then()方法时，成功的回调函数是必选的、失败的回调函数是可选的
+由于nodejs官方提供的fs模块仅支持以回调函数的方式读取文件，不支持 Promise 的调用方式。因此，需要先运行如下的命令，安装then-fs这个第三方包，从而支持我们基于Pro omise的方式读取文件的内容:
+调用then-fs提供的 readFile()方法，可以异步地读取文件的内容， 它的返回值是 Promise 的实例对象。因 
+此可以调用.then()方法为每个Promise异步操作指定成功和失败之后的回调函数。示例代码如下:
+
+import thenFs from "then-fs";
+thenFs.readFile('./in.txt', 'utf8').then((r1) => { console.log(r1) })
+thenFs.readFile('./in3.txt', 'utf8').then((r2) => { console.log(r2) })
+thenFs.readFile('./in1.txt', 'utf8').then((r3) => { console.log(r3) })//缺点就是不能按顺序展示（异步）
+解决异步问题：（也可以用async/await 因为 1.then链式调用的优点:解决了回调地狱的问题 2.then链式调用的缺点:代码冗余、阅读性差、不易理解）
+、import thenFs from "then-fs";
+thenFs.readFile('./in.txt', 'utf8').then((r1) => {
+  console.log(r1)
+  return thenFs.readFile('./in3.txt', 'utf8')
+})
+  .then((r2) => {
+    console.log(r2)
+    return thenFs.readFile('./in1.txt', 'utf8')
+  })
+  .then((r3) => { console.log(r3) }).catch((err) => { console.log(err.message); })//捕获错误
+
+Promise.all()方法会发起并行的Promise异步操作，等所有的异步操作全部结束后才会执行下一步的then操作(等待机制)。示例代码如下:
+import thenFs from "then-fs";
+const promiseArr = [
+  thenFs.readFile('./in.txt', 'utf8'),
+  thenFs.readFile('./in1.txt', 'utf8'),
+  thenFs.readFile('./in3.txt', 'utf8'),
+]
+Promise.all(promiseArr).then(([r1, r2, r3]) =>
+  console.log(r1, r2, r3)).catch(err => {
+    console.log(err, massage);
+  })
+Promise封装读文件的方法
+1.方法的名称要定义为getFile
+2.方法接收一个形参fpath，表示要读取的文件的路径
+3.方法的返回值为Promise实例对象
+import fs from "then-fs";
+getFile('./in.txt')
+getFile('./in3.txt').then((ri) => { console.log(ri); }, (err) => { })
+function getFile(fpath) {
+  return new Promise(function (resolve, reject) {
+    fs.readFile(fpath, 'utf-8', (err, dataStr) => {
+      if (err) return reject(err)
+      resolve(dataStr)
+    })
+  })
+}
+
+
+（三）能够知道如何使用async/await简化Promise的调用？
+注意：如果在function中使用了await，则function必须被async修饰
+在async 方法中，第一个 await 之前的代码会同步执行，await 之后的代码会异步执行
+
+
+（四）能够说出什么是EventLoop？
+JavaScript 主线程从“任务队列”中读取异步任务的回调函数，放到执行栈中依次执行。这个过程是循环不断的，所以整个的这种运行机制又称为EventLoop(事件循环)。
+
+
+（五）能够说出宏任务和微任务的执行顺序？
+JavaScript把异步任务又做了进一步的划分，异步任务又分为两类，分别是:
+1 宏任务(macrotask) 
+异步Ajax请求、
+setTimeout、setlnterval
+文件操作其它宏任务
+微任务(microtask)
+Promisethen、.catch和finally
+process.nextTick
+其它微任务
+ 顺序：每一个宏任务执行完之后，都会检查是否存在待执行的微任务，如果有，则执行完所有微任务之后，再继续执行下一个宏任务。
+面试题：先找同步任务再找同步的微任务，再找异步任务的宏，最后异步微任务
+console.log('1')
+setTimeout(function () {
+  console.log('2')
+  new Promise(function (resolve) {
+    console.log('3')
+    resolve()
+  }).then(function () {
+    console.log('4');
+  })
+})
+new Promise(function (resolve) {
+
+  console.log('5')
+  resolve()
+}).then(function () {
+  console.log('6')
+})
+setTimeout(function () {
+
+  console.log('7')
+  new Promise(function (resolve) {
+    console.log('8')
+    resolve()
+  }).then(function () {
+    console.log('9')
+
+  })
+}
+)
+
+
+其他：js为单线程的语言，一个程序过长就会出现假死状态。  
+为了防止某个耗时任务导致程序假死的问题，lavaScript把待执行的任务分为了两类:
+①同步任务(synchronous)
+又叫做非耗时任务，指的是在主线程上排队执行的那些任务
+只有前一个任务执行完毕，才能执行后一个任务
+异步任务(asynchronous)
+又叫做耗时任务，异步任务由JavaScript 委托给宿主环境进行执行
+当异步任务执行完成后，会通知 JavaScript 主线程执行异步任务的回调函数
+
+API接口案例 
+基于MySOL 数据库+Express对外提供用户列表的API接口服务。用到的技术点如下:
+第三方包express和mysql2 ES6模块化 Promise async/await
+2.主要的实现步骤
+
+1 搭建项目的基本结构
+2 创建基本的服务器
+3 创建db 数据库操作模块 
+4 创建user ctrl业务模块 
+5 创建 user router路由模块
+6 启用ES6模块化模式  安装依赖包
+
+创建文件app.js
+import express from 'express'
+import userRouter from './controller/usera.js'
+const app = express()
+app.use('/api', userRouter)
+app.listen(80, () => {
+  console.log('http://127.0.0.1');
+})
+创建文件db.js
+import mysql from 'mysql'
+const pool = mysql.createPool({
+  host: '127.0.0.1',
+  port: 3306,
+  database: 'my_db_01',
+  user: 'root',
+  password: '1234'
+})
+export default pool.promise()
+创建user模块
+import db from '../db.js'
+export async function getAllUser(req, res) {
+  try {
+    const [r] = await db.query('select id,username from ev_user')
+    res.send({
+      status: 0,
+      message: '获取用户',
+      data: r
+    })
+  } catch (e) {
+    res.send({ satus: 1 })
+  }
+}
+创建usera模块
+import express from "express";
+import { getAllUser } from "./use.js";
+const router = new express.Router()
+router.get('/user', getAllUser)
+export default router
